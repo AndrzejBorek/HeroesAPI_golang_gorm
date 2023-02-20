@@ -81,30 +81,7 @@ func CreateHero(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusNotFound, gin.H{"Code": "Not Found", "Error": "SuperPowers with given IDs do not exist.", "SuperPowers": missingIDs})
 			return
 		}
-		// Second approach. I choose first one, because this had to query database n times, where n is len of superPowers
-		// from request body. Although it had much easier checking if superPower does not exist.
 
-		//for _, id := range heroInput.SuperPowersIDs {
-		//	var superPower models.SuperPower
-		//	if errors.Is(db.First(&superPower, id).Error, gorm.ErrRecordNotFound) {
-		//		c.JSON(http.StatusNotFound, gin.H{"error": "SuperPower with ID: " + strconv.Itoa(int(id)) + " not found."})
-		//		return
-		//	}
-		//	superPowers = append(superPowers, superPower)
-		//}
-
-		//var villains []*models.Villain
-		//if heroInput.VillainsIDs != nil {
-		//	for _, id := range heroInput.VillainsIDs {
-		//		var villain models.Villain
-		//		err := db.First(&villain, id).Error
-		//		if err == gorm.ErrRecordNotFound {
-		//			c.JSON(http.StatusBadRequest, gin.H{"error": "Villain with ID: " + strconv.Itoa(int(id)) + " not found."})
-		//			return
-		//		}
-		//		villains = append(villains, &villain)
-		//	}
-		//}
 		var villains []*models.Villain
 		if len(heroInput.VillainsIDs) > 0 {
 			result = db.Find(&villains, heroInput.VillainsIDs)
@@ -142,17 +119,6 @@ func CreateHero(db *gorm.DB) gin.HandlerFunc {
 				return
 			}
 		}
-		//if heroInput.HelpersIDs != nil {
-		//	for _, id := range heroInput.HelpersIDs {
-		//		var helper models.Helper
-		//		err := db.First(&helper, id).Error
-		//		if err == gorm.ErrRecordNotFound {
-		//			c.JSON(http.StatusBadRequest, gin.H{"error": "Helper with ID: " + strconv.Itoa(int(id)) + " not found."})
-		//			return
-		//		}
-		//		helpers = append(helpers, helper)
-		//	}
-		//}
 
 		hero := models.Hero{
 			Name:        heroInput.Name,
