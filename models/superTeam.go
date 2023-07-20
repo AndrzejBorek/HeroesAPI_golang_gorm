@@ -4,7 +4,8 @@ import "gorm.io/gorm"
 
 type SuperTeam struct {
 	gorm.Model
-	//Heroes []Hero `json:"Heroes" gorm:"many2many:hero_superpowers;association_foreignkey:ID;foreignkey:ID"`
+	Name   string `json:"Name" gorm:"UNIQUE"`
+	Heroes []Hero `json:"HeroesIDs" gorm:"constraint:OnDelete:SET NULL;"`
 }
 
 func (SuperTeam) TableName() string {

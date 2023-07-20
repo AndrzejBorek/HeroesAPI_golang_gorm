@@ -16,11 +16,11 @@ func GenerateDatabase() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = Db.Migrator().DropTable(&models.Hero{}, &models.SuperPower{}, &models.Helper{}, &models.Villain{})
+	err = Db.Migrator().DropTable(&models.Hero{}, &models.SuperPower{}, &models.Helper{}, &models.Villain{}, &models.SuperTeam{}, &models.EvilPlan{})
 	if err != nil {
 		return nil, err
 	}
-	err = Db.AutoMigrate(&models.Hero{}, &models.SuperPower{}, &models.Helper{}, &models.Villain{})
+	err = Db.AutoMigrate(&models.Hero{}, &models.SuperPower{}, &models.Helper{}, &models.Villain{}, &models.SuperTeam{}, &models.EvilPlan{})
 	if err != nil {
 		return nil, err
 	}

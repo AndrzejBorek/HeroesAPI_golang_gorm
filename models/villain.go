@@ -7,6 +7,7 @@ type Villain struct {
 	Name        string       `json:"name" gorm:"Not Null"`
 	SuperPowers []SuperPower `json:"superPowers" gorm:"unique;many2many:villain_superpowers;"`
 	HeroEnemies []*Hero      `json:"heroEnemies" gorm:"many2many:hero_villains"`
+	EvilPlan    EvilPlan     `json:"evilPlanUID"`
 }
 
 func (Villain) TableName() string {

@@ -35,10 +35,21 @@ func CreateVillain(db *gorm.DB) gin.HandlerFunc {
 			}
 			superPowers = append(superPowers, superPower)
 		}
+		var heroEnemies []*models.Hero
+		for _, id := range villainInput.HeroEnemiesIDs {
+			var hero models.Hero
+			err := db.First(&hero, id).Error
+			if err == gorm.ErrRecordNotFound {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "SuperHero with ID: " + strconv.Itoa(int(id)) + " not found."})
+				return
+			}
+			heroEnemies = append(heroEnemies, &hero)
+		}
 
 		villain := models.Villain{
 			Name:        villainInput.Name,
 			SuperPowers: superPowers,
+			HeroEnemies: heroEnemies,
 		}
 		result := db.Create(&villain)
 		if result.Error != nil {

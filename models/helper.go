@@ -5,8 +5,8 @@ import "gorm.io/gorm"
 type Helper struct {
 	gorm.Model
 	Name   string `json:"name" gorm:"unique;not null"`
-	HeroID uint   `json:"heroID" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Hero   Hero   `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	HeroID uint   `json:"heroID"`
+	Hero   Hero   `json:"-"`
 }
 
 func (Helper) TableName() string {

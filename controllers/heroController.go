@@ -56,6 +56,24 @@ func DeleteHero(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
+func GetHeroByID(db *gorm.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var hero models.Hero
+		heroID := c.Param("heroID")
+		err := db.Preload("Helpers").Preload("Villains").Preload("SuperPowers").Preload("SuperTeam").First(&hero, heroID).Error
+		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				c.JSON(http.StatusNotFound, gin.H{"error": "Hero with ID: " + heroID + " not found."})
+				return
+			}
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, hero)
+	}
+}
+
 func CreateHero(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var heroInput requestModels.CreateHeroInput
@@ -125,6 +143,10 @@ func CreateHero(db *gorm.DB) gin.HandlerFunc {
 			SuperPowers: superPowers,
 			Villains:    villains,
 			Helpers:     helpers,
+		}
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error})
+			return
 		}
 
 		result = db.Create(&hero)
