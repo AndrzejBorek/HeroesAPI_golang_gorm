@@ -2,25 +2,21 @@ package database
 
 import (
 	"errors"
-	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/models"
-	"gorm.io/driver/sqlite"
+	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/internal/models"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"os"
 )
 
 func GenerateDatabase() (*gorm.DB, error) {
-
 	var err error
-	Db, err := gorm.Open(sqlite.Open("HeroesAPI.db"), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
+	Db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_DSN")), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
 	if err != nil {
 		return nil, err
 	}
-	err = Db.Migrator().DropTable(&models.Hero{}, &models.SuperPower{}, &models.Helper{}, &models.Villain{}, &models.SuperTeam{}, &models.EvilPlan{})
-	if err != nil {
-		return nil, err
-	}
-	err = Db.AutoMigrate(&models.Hero{}, &models.SuperPower{}, &models.Helper{}, &models.Villain{}, &models.SuperTeam{}, &models.EvilPlan{})
+	err = Db.AutoMigrate(&models.SuperPower{}, &models.Hero{}, &models.Helper{}, &models.Villain{}, &models.SuperTeam{}, &models.EvilPlan{})
 	if err != nil {
 		return nil, err
 	}
