@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/database/queries"
 	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/internal/models"
 	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/internal/requestModels"
+	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/internal/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
 	"reflect"
-	"strconv"
 )
 
 func GetSuperTeams(db *gorm.DB) gin.HandlerFunc {
@@ -24,14 +25,14 @@ func GetSuperTeams(db *gorm.DB) gin.HandlerFunc {
 
 func GetMembersOfSuperTeam(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var heroes []models.Hero
-		teamID, err := strconv.ParseUint(c.Param("teamID"), 10, 64)
+		var heroes []models.HeroNameID
+		teamID, err := utils.StringToUint(c.Param("teamID"))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Wrong teamID format."})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Wrong ID format."})
 			return
 		}
+		heroes, err = queries.GetSuperTeamMembers(db, teamID)
 
-		err = db.First(&models.SuperTeam{}, teamID).Error
 		if err != nil {
 			if err == gorm.ErrRecordNotFound {
 				c.JSON(http.StatusNotFound, gin.H{"error": "SuperTeam with given ID does not exist."})
@@ -41,15 +42,15 @@ func GetMembersOfSuperTeam(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		err = db.Where("super_team_id = ?", teamID).Find(&heroes).Error
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error during database query."})
-			return
-		}
-		if len(heroes) == 0 {
-			c.JSON(http.StatusNoContent, gin.H{"error": "This SuperTeam does not have any heroes."})
-			return
-		}
+		//err = db.Where("super_team_id = ?", teamID).Find(&heroes).Error
+		//if err != nil {
+		//	c.JSON(http.StatusInternalServerError, gin.H{"error": "Error during database query."})
+		//	return
+		//}
+		//if len(heroes) == 0 {
+		//	c.JSON(http.StatusNoContent, gin.H{"error": "This SuperTeam does not have any heroes."})
+		//	return
+		//}
 		c.JSON(http.StatusOK, heroes)
 	}
 }

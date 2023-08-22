@@ -1,17 +1,16 @@
 package app
 
 import (
-	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/database"
 	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/internal/controllers"
 	"github.com/gin-gonic/gin"
-	"log"
+	"gorm.io/gorm"
 )
 
-func SetupRouter() *gin.Engine {
-	db, err := database.GenerateDatabase()
-	if err != nil {
-		log.Fatalf("Failed to setup database: %v", err)
-	}
+func SetupRouter(db *gorm.DB) *gin.Engine {
+	//db, err := database.GenerateDatabase()
+	//if err != nil {
+	//	log.Fatalf("Failed to setup database: %v", err)
+	//}
 
 	r := gin.Default()
 	//HeroesIDs

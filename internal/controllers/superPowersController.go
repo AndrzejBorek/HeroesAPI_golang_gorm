@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/database/queries"
 	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/internal/models"
 	"github.com/AndrzejBorek/HeroesAPI_golang_gorm/internal/requestModels"
 	"github.com/gin-gonic/gin"
@@ -34,7 +35,7 @@ func AddSuperPower(db *gorm.DB) gin.HandlerFunc {
 func GetSuperPowers(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var superPowers []models.SuperPower
-		err := db.Find(&superPowers).Error
+		superPowers, err := queries.GetAllSuperPowers(db)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error during database query."})
 		}

@@ -13,6 +13,8 @@ import (
 func GenerateDatabase() (*gorm.DB, error) {
 	var err error
 	Db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_DSN")), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
+
+	// TODO check how this option in gorm.Config will affect performance of app: , SkipDefaultTransaction: true
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +24,7 @@ func GenerateDatabase() (*gorm.DB, error) {
 	}
 	err = FillDatabase(Db)
 	if err != nil {
-		log.Printf("Failed to insert data into database: %v", err)
+		log.Fatalf("Failed to insert data into database: %v", err)
 		return nil, err
 	}
 	return Db, nil
